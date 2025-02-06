@@ -5,10 +5,10 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
-
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const session = useSession();
+  
   return (
     <header className="fixed w-full z-50 bg-gray-900/80 backdrop-blur-sm">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -36,19 +36,19 @@ export default function Header() {
           </Link>
         </nav>
         <div className="hidden md:block">
-          {session.data?.user ? (
+          {session?.data?.user ? (
             <Button
-              onClick={() => signIn()}
+              onClick={() => signOut()}
               className="mr-2 bg-gradient-to-tr from-purple-600 to-purple-500"
             >
-              Log In
+              Log Out
             </Button>
           ) : (
             <Button
-              onClick={() => signOut()}
+              onClick={() => signIn()}
               className="mr-2 bg-gradient-to-tr from-red-600 to-red-500"
             >
-              Sign Up
+              Sign In
             </Button>
           )}
         </div>

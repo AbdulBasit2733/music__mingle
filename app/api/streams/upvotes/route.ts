@@ -40,6 +40,10 @@ export async function POST(req: NextRequest) {
             streamId:data.streamId,
         }
       })
+      return NextResponse.json({
+        message:"updated Successfully",
+        data:data
+      })
   } catch (error) {
     console.log(error);
     return NextResponse.json({
