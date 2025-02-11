@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 const NowPlaying = () => {
   return (
     <motion.div
-      className="fixed bottom-0 left-0 right-0 bg-gray-900/80 backdrop-blur-lg border-t border-gray-800 p-4"
+      className=" bg-gray-900/80 backdrop-blur-lg border-t border-gray-800 p-4 mx-5"
       initial={{ y: 100 }}
       animate={{ y: 0 }}
       transition={{ delay: 1.5, duration: 0.5 }}
