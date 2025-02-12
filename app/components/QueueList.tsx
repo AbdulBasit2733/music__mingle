@@ -90,7 +90,7 @@ const QueueList = ({ creatorId }: { creatorId: string }) => {
   );
 
   return (
-    <motion.div className="w-full max-w-3xl mx-auto p-6 space-y-6 border-l border-purple-900">
+    <motion.div className="p-6 space-y-6 border-l border-purple-900">
       <h2 className="text-2xl font-bold mb-6 text-purple-300">Up Next</h2>
       <div className="space-y-4">
         {videos.map((cont) => (

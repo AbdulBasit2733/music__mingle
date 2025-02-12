@@ -7,7 +7,7 @@ const CreatorShare = ({
   params: { creatorId: string };
 }) => {
   return <div>
-    <StreamView creatorId={creatorId}/>
+    <StreamView creatorId={creatorId} playVideo={false} />
   </div>;
 };
 

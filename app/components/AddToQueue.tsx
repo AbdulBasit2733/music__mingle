@@ -1,4 +1,5 @@
 "use client";
+
 import toast from "react-hot-toast";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
@@ -13,6 +14,7 @@ import { YT_REGEX } from "../lib/db";
 import NowPlaying from "./NowPlaying";
 
 const creatorId = "9d65426b-b5cc-432a-927b-a037e7bef35c";
+
 const AddToQueue = () => {
   const [url, setUrl] = useState("");
   const [queue, setQueue] = useState([]);
@@ -20,49 +22,38 @@ const AddToQueue = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     if (!url) {
-      toast({
-        title: "Error",
-        description: "Please enter a YouTube URL",
-        variant: "destructive",
-      });
-      setLoading(false);
+      toast.error("Please enter a YouTube URL");
       return;
     }
-    // TODO: Add video to queue
-    const response = await axios.post(
-      "/api/streams",
-      { url, creatorId: "9d65426b-b5cc-432a-927b-a037e7bef35c" },
-      {
-        withCredentials: true,
+
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        "/api/streams",
+        { url, creatorId },
+        { withCredentials: true }
+      );
+
+      if (response.data) {
+        setQueue((prevQueue) => [...prevQueue, response.data]);
+        toast.success("Video added to queue");
+        setUrl("");
+      } else {
+        toast.error("Error While Adding To Queue");
       }
-    );
-    if (response.data) {
-      setQueue([...queue, response.data]);
+    } catch (error) {
+      toast.error("Error While Adding To Queue");
+    } finally {
       setLoading(false);
-      toast({
-        title: "Success",
-        description: "Video added to queue",
-      });
-      setUrl("");
     }
-    toast({
-      title: "Error",
-      description: "Error While Adding To Queue",
-    });
-    setLoading(false);
   };
 
   const handleShare = () => {
     const sharableLink = `${window.location.origin}/creator/${creatorId}`;
     navigator.clipboard.writeText(sharableLink).then(
-      () => {
-        toast.success("Link copied to the clipboard");
-      },
-      (err) => {
-        toast.error("Could not copy the text", err);
-      }
+      () => toast.success("Link copied to clipboard"),
+      () => toast.error("Could not copy the link")
     );
   };
 
@@ -90,7 +81,7 @@ const AddToQueue = () => {
               className="bg-purple-600 hover:bg-purple-700 transition-colors duration-300"
             >
               <Plus className="mr-2 h-4 w-4" />
-              {loading ? "Adding to queue" : "Add to Queue"}
+              {loading ? "Adding..." : "Add to Queue"}
             </Button>
             <Button
               onClick={handleShare}
@@ -101,14 +92,14 @@ const AddToQueue = () => {
             </Button>
           </div>
         </div>
-        {url && url.match(YT_REGEX) && !loading && (
+
+        {url.match(YT_REGEX) && !loading && (
           <LiteYouTubeEmbed
             id={url.split("?v=")[1]}
-            title="What’s new in Material Design for the web (Chrome Dev Summit 2019)"
+            title="YouTube Video Preview"
           />
         )}
       </motion.form>
-      <NowPlaying />
     </div>
   );
 };

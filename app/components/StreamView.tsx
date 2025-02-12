@@ -10,7 +10,13 @@ import AddToQueue from "../components/AddToQueue";
 import QueueList from "../components/QueueList";
 import NowPlaying from "../components/NowPlaying";
 
-const StreamView = ({ creatorId }: { creatorId: string }) => {
+const StreamView = ({
+  creatorId,
+  playVideo,
+}: {
+  creatorId: string;
+  playVideo: boolean;
+}) => {
   const { data: session } = useSession();
   const router = useRouter();
   const [data, setData] = useState([]);
@@ -34,7 +40,7 @@ const StreamView = ({ creatorId }: { creatorId: string }) => {
     }
 
     fetchData();
-    intervalRef.current = setInterval(fetchData, 10000);
+    intervalRef.current = setInterval(fetchData, 1000);
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -43,7 +49,7 @@ const StreamView = ({ creatorId }: { creatorId: string }) => {
 
   return (
     <div className="min-h-screen pb-24 bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-gray-100">
-      <main className="container mx-auto py-12 px-4 text-center">
+      <main className="max-w-7xl mx-auto py-12 px-4 text-center">
         <motion.h1
           className="text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600"
           initial={{ opacity: 0, y: -50 }}
@@ -60,9 +66,14 @@ const StreamView = ({ creatorId }: { creatorId: string }) => {
         >
           Start listening to your favorite playlist!
         </motion.p>
-        <div className="grid grid-cols-1 md:grid-cols-2 place-content-center">
-          <AddToQueue />
-          <QueueList creatorId={creatorId} />
+        <div className="flex justify-around w-full">
+          <div className="flex flex-col gap-2">
+            <AddToQueue />
+            <NowPlaying creatorId={creatorId} playVideo={playVideo} />
+          </div>
+          <div className="max-w-lg">
+            <QueueList creatorId={creatorId} />
+          </div>
         </div>
       </main>
     </div>
