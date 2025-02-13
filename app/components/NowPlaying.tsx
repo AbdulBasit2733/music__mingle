@@ -18,6 +18,11 @@ const NowPlaying = ({
   const [currentStream, setCurrentStream] = useState(null);
   const [queue, setQueue] = useState([]);
   const [playNextLoader, setPlayNextLoader] = useState(false);
+  const [start, setStart] = useState(false);
+
+  const handleStartPlay = () => {
+    setStart(true);
+  };
 
   useEffect(() => {
     if (!creatorId || !session) return;
@@ -75,7 +80,20 @@ const NowPlaying = ({
           <div className="flex items-center gap-4">
             {currentStream?.stream?.extractedId ? (
               <>
-                <ReactPlayer playing controls width={"650px"} height={"250px"} onEnded={() => playNext()} url={`https://www.youtube.com/embed/${currentStream?.stream?.extractedId}?autoplay=1`} />
+                <ReactPlayer
+                  playing={true}
+                  controls
+                  width="650px"
+                  height="250px"
+                  onEnded={() => playNext()}
+                  url={`https://www.youtube.com/embed/${currentStream?.stream?.extractedId}?autoplay=1&mute=1`}
+                  config={{
+                    youtube: {
+                      playerVars: { autoplay: 1, mute: 1 },
+                    },
+                  }}
+                />
+
                 {/* <iframe
                   src={`https://www.youtube.com/embed/${currentStream.stream.extractedId}?autoplay=1`}
                   allow="autoplay"

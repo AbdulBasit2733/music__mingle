@@ -22,6 +22,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const session = await getServerSession();
+
+    if (!session?.user?.email) {
+      return NextResponse.json({ message: "Unauthenticated" }, { status: 403 });
+    }
+
+    const user = await prismaClient.user.findFirst({
+      where: { email: session.user.email },
+    });
+
+    if (!user) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
     const extractedId = match[1];
     const res = await youtubesearchapi.GetVideoDetails(extractedId);
 
@@ -38,6 +52,17 @@ export async function POST(req: NextRequest) {
     const defaultImage =
       "https://static.vecteezy.com/system/resources/thumbnails/038/027/464/small_2x/ai-generated-portrait-of-a-cute-little-domestic-cat-on-a-pink-background-with-love-hearts-photo.jpg";
 
+     const existingActiveStream = await prismaClient.stream.count({
+      where:{
+        userId:data.creatorId
+      }
+     })
+     
+     if(existingActiveStream > 20){
+      return NextResponse.json({
+        message:"You can not add more streams"
+      })
+     }
     const stream = await prismaClient.stream.create({
       data: {
         userId: data.creatorId,
